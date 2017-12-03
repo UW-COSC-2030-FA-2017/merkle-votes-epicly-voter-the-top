@@ -2,52 +2,47 @@
 
 Merkle Is Voting - And it's going to be epic.
 
-This homework counts for your 4th 5th and 6th homeworks.
+## Team members
 
-## Part One
-1. Implement a binary tree (NOT a search tree)
-2. Nodes must -
-  * hold a pseudo-time stamp (integer, non-unique)[5]
-  * hold a 128 bit data component (string of 32 characters)[5]
-  * have 2 pointers to type node [5]
-  * be differentiable if they are a leaf node or not [5]
-3. A bTREE.h file and bTREE.cpp file are included but are incomplete
-4. Complete the functions required [30]
-  * Add any additional functions that might want
+Hunter Jones
 
-## Part Two
-1. Use the binary tree created in part one to implement a pseudo-MerkleTree Class
-2. Your Merkle Trees have some special properties:
-  * Manually inserted data can only exist as leaf nodes
-  * Non-Leaf nodes are the hashes of the child nodes below them
-  * Our nodes should be ordered by a 'fake' time stamp
-3. You must create at least 3 types of hash functions each group memeber is responsible for at least one
-  * (they are listed at hash_1, hash_2 and hash_3).
-4. pMT.h and pMT.cpp are provided but incomplete
-5. Complete the functions provided [30]
+## Building this project
 
-### Individual Submission
-1. Compute the number of operations it takes to:
-  * Insert a new data node [4]
-  * Recompute hashes upon entry of a new node [4]
-  * Compare if two trees are identical [4]
-  *  Determine where two trees differ [4]
-2. Describe your hash function in detail [4]
+This project uses a modified version of the starter interface, so please use the provided [Makefile](Makefile).
 
-Submit your answers on WyoCourses
+Requires C++11 or later. Tested with GCC 6.3.0 on an ARM processor.
 
-## Part Three
-1. Create a vote.cc with a main function that stores 'time stamped' votes into your pmTree data structure
-2. Vote Data will be a string in the following format RANDOM:CANDIDATE
-3. You will be provided with sample voterFiles.
-4. Your program should be able to:
-  * Read in a single file with timestamped votes and output the value of the root node 
-  * Read in two sets of time stamped vote files, and:
-  * If identical, print "Validated"
-  * If not identical, print the sub-trees that differ, along with the offending vote data 
+## Running the executable
 
-## Final Project (more details forthcoming)
-Create a poster using the template provided, describing your design decisions, lessons learned, future extension ideas, ...
-Poster will be due at the time of final code submission
+The makefile will generate an executable called `vote`, which should be used like this:
 
-You must change this readme file to contain the names of your group members as well as the mathematical functions you have each implemented for your hash functions.
+```
+./vote filename_1 [filename_2] [-h1 / -h2 / -h3]
+```
+
+Square brackets `[]` denote optional arguments. All arguments can appear in any order. `-h1`, `-h2`, and `-h3` allow you to specify the hashing algorithm to be used, `-h3` is the default.
+
+## Description of hashing algorithms
+
+### hash_1
+
+`hash_1` is an implementation of the DJB2 algorithm by Dan Bernstein. It begins by setting the value of the hash to the prime number 5381. For each character in the input string, the hash is reassigned to the value of the sum of itself shifted left by 5 bits, plus itself, plus the numeric value of the character.
+
+This algorithm has the practical drawback of overflowing for long inputs.
+
+### hash_2
+
+`hash_2` is an implementation of the SDBM algorithm, which was designed for a database library of the same name. Like `hash_1`, this algorithm depends on a magic prime number, in this case 65599. In this algorithm, the hash is set to 0. Then for each character in the input string, the hash is reassigned the value of the sum of itself shifted left by 6 bits, itself shifted left by 16 bits, the negative value of itself, and the numeric value of the character.
+
+The SDBM algorithm is said to have better distribution, scrambling, and boundedness than `hash_1`.
+
+### hash_3
+
+`hash_3` is an implementation of the CRC32 (cyclic redundancy check, 32-bit) algorithm. Here, a the starting value of the hash is 0. Then, the highest 5 bits of the hash are stored for later use. The hash is shifted left by 5 bits, then bitwise XORd with the previously saved highest five bits, bitshifted by 27 bits. The hash is then XOR'd by the numeric value of the current character.
+
+This is probably the best algorithm used in this project (which is the reason it was selected as the default). The reason for this is that this algorithm is designed specifically to accomidate ASCII characters, the most commonly appearing of which have most significance in the last 5 bits. CRC is widely used today because of this.
+
+### Sources
+
+1. [DJB2, SDBM](http://www.cse.yorku.ca/~oz/hash.html)
+2. [CRC32](https://www.cs.hmc.edu/~geoff/classes/hmc.cs070.200101/homework10/hashfuncs.html)
