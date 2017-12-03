@@ -24,7 +24,7 @@ std::string MerkleTree::uint_to_hex_str(const unsigned int &i)
 }
 
 std::string MerkleTree::hash_1(const std::string &input)
-{//std::cout << "Welcome to hash_1" << std::endl;
+{
     // http://www.cse.yorku.ca/~oz/hash.html
     /* An implementation of the DJB2 algorithm */
     unsigned int hash = 5381;
